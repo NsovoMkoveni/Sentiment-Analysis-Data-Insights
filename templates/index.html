@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Sentiment Analysis Dashboard</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #eef2ff, #f8fafc);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #111827;
+            color: white;
+            padding: 25px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .badge {
+            background: #2563eb;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 12px;
+            color: #111827;
+        }
+
+        .hero p {
+            color: #64748b;
+            font-size: 17px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            border: 1px solid #e2e8f0;
+        }
+
+        .card h2 {
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+
+        .card-description {
+            color: #64748b;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 180px;
+            padding: 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            resize: vertical;
+            font-size: 16px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #2563eb;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .analyze {
+            background: #2563eb;
+            color: white;
+        }
+
+        .analyze:hover {
+            background: #1d4ed8;
+        }
+
+        .result {
+            text-align: center;
+        }
+
+        .result-icon {
+            font-size: 55px;
+            margin: 10px 0;
+        }
+
+        .sentiment {
+            font-size: 34px;
+            font-weight: bold;
+            margin: 10px 0 20px;
+        }
+
+        .confidence-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: #475569;
+            font-size: 14px;
+        }
+
+        .progress {
+            width: 100%;
+            height: 14px;
+            background: #e2e8f0;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #2563eb;
+            border-radius: 20px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .info-box {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        .info-box strong {
+            display: block;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .info-box span {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .charts-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            border: 1px solid #e2e8f0;
+        }
+
+        .chart-card h2 {
+            margin-bottom: 10px;
+            font-size: 22px;
+            color: #111827;
+        }
+
+        .chart-card p {
+            color: #64748b;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .chart-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 800px) {
+
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="logo">
+        🤖 AI Sentiment Analyzer
+    </div>
+
+    <div class="badge">
+        Machine Learning
+    </div>
+
+</header>
+
+<main class="container">
+
+    <section class="hero">
+
+        <h1>Customer Sentiment Analysis</h1>
+
+        <p>
+            Analyze customer feedback using an AI-powered machine learning model.
+        </p>
+
+    </section>
+
+    <section class="dashboard">
+
+        <div class="card">
+
+            <h2>📝 Analyze a Review</h2>
+
+            <p class="card-description">
+                Enter a customer review and let the AI model determine its sentiment.
+            </p>
+
+            <form method="POST">
+
+                <textarea
+                    name="review"
+                    placeholder="Example: The service was excellent and the staff were very helpful..."
+                    required
+                >{{ review }}</textarea>
+
+                <div class="buttons">
+
+                    <button
+                        type="submit"
+                        class="analyze"
+                    >
+                        🔍 Analyze Sentiment
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="card result">
+
+            <h2>🤖 AI Analysis Result</h2>
+
+            <p class="card-description">
+                The model's prediction will appear here.
+            </p>
+
+            {% if sentiment %}
+
+                {% if sentiment == "Positive" %}
+
+                    <div class="result-icon">😊</div>
+
+                {% elif sentiment == "Negative" %}
+
+                    <div class="result-icon">😞</div>
+
+                {% else %}
+
+                    <div class="result-icon">😐</div>
+
+                {% endif %}
+
+                <div class="sentiment">
+                    {{ sentiment }}
+                </div>
+
+                <div class="confidence-label">
+
+                    <span>Model Confidence</span>
+
+                    <strong>
+                        {{ "%.2f"|format(confidence) }}%
+                    </strong>
+
+                </div>
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar"
+                        style="width: {{ confidence }}%;"
+                    ></div>
+
+                </div>
+
+            {% else %}
+
+                <div class="result-icon">
+                    🤖
+                </div>
+
+                <div class="sentiment">
+                    Ready
+                </div>
+
+                <p class="card-description">
+                    Enter a review on the left to begin analysis.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+    <section class="info-grid">
+
+        <div class="info-box">
+
+            <strong>316</strong>
+
+            <span>
+                Reviews analyzed in dataset
+            </span>
+
+        </div>
+
+        <div class="info-box">
+
+            <strong>3</strong>
+
+            <span>
+                Sentiment categories
+            </span>
+
+        </div>
+
+        <div class="info-box">
+
+            <strong>76.56%</strong>
+
+            <span>
+                Model test accuracy
+            </span>
+
+        </div>
+
+    </section>
+
+    <section class="charts-section">
+
+        <div class="chart-card">
+
+            <h2>📊 Sentiment Distribution</h2>
+
+            <p>
+                Number of reviews by sentiment category.
+            </p>
+
+            <img
+                src="{{ url_for('static', filename='sentiment_distribution.png') }}"
+                alt="Sentiment Distribution Chart"
+            >
+
+        </div>
+
+        <div class="chart-card">
+
+            <h2>🥧 Sentiment Percentage Distribution</h2>
+
+            <p>
+                Percentage breakdown of the sentiment categories.
+            </p>
+
+            <img
+                src="{{ url_for('static', filename='sentiment_percentages.png') }}"
+                alt="Sentiment Percentage Distribution"
+            >
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer class="footer">
+
+    AI for Data Analysis & Insights • Sentiment Analysis Project
+
+</footer>
+
+</body>
+
+</html>
