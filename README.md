@@ -10,7 +10,7 @@ The project was developed as part of an **AI Bootcamp** under the theme **AI for
 
 ## 🚀 Live Application
 
-👉 **[Launch AI Sentiment Analyzer](YOUR-LIVE-URL-HERE)**
+👉 [Launch AI Sentiment Analyzer](https://sentiment-analysis-data-insights.onrender.com)
 
 ---
 
